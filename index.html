@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +21,6 @@
     ================================= -->
 
     <header>
-
         <div class="container header-inner">
 
             <a href="#home" class="logo">
@@ -32,6 +30,7 @@
             <nav>
                 <a href="#home">Home</a>
                 <a href="#software">Software</a>
+                <a href="#about">About</a>
             </nav>
 
             <div class="header-actions">
@@ -48,8 +47,8 @@
                     class="cart-button"
                     id="cartButton"
                     type="button"
+                    aria-label="Open cart"
                 >
-
                     <svg
                         width="17"
                         height="17"
@@ -68,18 +67,14 @@
 
                     Cart
 
+                    <span id="cartCount">0</span>
                 </button>
 
             </div>
 
         </div>
-
     </header>
 
-
-    <!-- ================================
-         MAIN
-    ================================= -->
 
     <main>
 
@@ -92,28 +87,24 @@
             <div class="container">
 
                 <div class="eyebrow">
-
                     <span class="eyebrow-dot"></span>
-
                     Free software, all in one place
-
                 </div>
-
 
                 <h1>
                     Find the software.<br>
-
-                    <span class="hero-title">
-                        Get things done.
-                    </span>
+                    <span class="hero-title">Get things done.</span>
                 </h1>
 
-
                 <p class="hero-description">
-                    Softs is a simple home for useful apps, games,
-                    creative tools, utilities, and more. Browse
-                    everything in one clean place — completely free.
+                    Softs is a simple home for useful apps, games, creative
+                    tools, utilities, and more. Browse everything in one
+                    clean place — completely free.
                 </p>
+
+                <a href="#software" class="btn-primary">
+                    Browse software →
+                </a>
 
 
                 <!-- Stats -->
@@ -121,35 +112,18 @@
                 <div class="stats">
 
                     <div class="stat">
-
                         <strong>100% Free</strong>
-
-                        <small>
-                            No subscriptions. No paywalls.
-                        </small>
-
+                        <small>No subscriptions. No paywalls.</small>
                     </div>
 
-
                     <div class="stat">
-
                         <strong>Many categories</strong>
-
-                        <small>
-                            Apps, games, tools &amp; more.
-                        </small>
-
+                        <small>Apps, games, tools &amp; more.</small>
                     </div>
 
-
                     <div class="stat">
-
                         <strong>Simple</strong>
-
-                        <small>
-                            Find what you need without the clutter.
-                        </small>
-
+                        <small>Find what you need without the clutter.</small>
                     </div>
 
                 </div>
@@ -167,19 +141,15 @@
 
             <div class="container">
 
-                <div
-                    id="softwareGrid"
-                    class="software-grid"
-                >
+                <div id="softwareGrid" class="software-grid">
 
 
-                    <!-- ================================
-                         ROBLOX
-                    ================================= -->
+                    <!-- ROBLOX -->
 
                     <article
                         class="soft-card"
                         data-name="Roblox"
+                        data-options="Nexomia,Medium"
                     >
 
                         <div class="card-top">
@@ -189,18 +159,15 @@
                             </span>
 
                         </div>
-
 
                         <h3>
                             Roblox
                         </h3>
 
-
                         <p>
-                            Create, share, and play millions of
-                            experiences made by a global community.
+                            Create, share, and play millions of experiences
+                            made by a global community.
                         </p>
-
 
                         <div class="card-bottom">
 
@@ -208,25 +175,21 @@
                                 Version Latest
                             </span>
 
-                            <button
-                                class="options"
-                                type="button"
-                            >
+                            <span class="options">
                                 Click for options →
-                            </button>
+                            </span>
 
                         </div>
 
                     </article>
 
 
-                    <!-- ================================
-                         COUNTER-STRIKE 2
-                    ================================= -->
+                    <!-- COUNTER STRIKE 2 -->
 
                     <article
                         class="soft-card"
                         data-name="Counter-Strike 2"
+                        data-options="Steam"
                     >
 
                         <div class="card-top">
@@ -236,19 +199,15 @@
                             </span>
 
                         </div>
-
 
                         <h3>
                             Counter-Strike 2
                         </h3>
 
-
                         <p>
-                            Competitive tactical FPS from Valve
-                            with classic Counter-Strike gameplay
-                            and modern features.
+                            Competitive tactical FPS from Valve with classic
+                            Counter-Strike gameplay and modern features.
                         </p>
-
 
                         <div class="card-bottom">
 
@@ -256,25 +215,21 @@
                                 Version Latest
                             </span>
 
-                            <button
-                                class="options"
-                                type="button"
-                            >
+                            <span class="options">
                                 Click for options →
-                            </button>
+                            </span>
 
                         </div>
 
                     </article>
 
 
-                    <!-- ================================
-                         GORILLA TAG
-                    ================================= -->
+                    <!-- GORILLA TAG -->
 
                     <article
                         class="soft-card"
                         data-name="Gorilla Tag"
+                        data-options="PC,VR"
                     >
 
                         <div class="card-top">
@@ -284,19 +239,15 @@
                             </span>
 
                         </div>
-
 
                         <h3>
                             Gorilla Tag
                         </h3>
 
-
                         <p>
-                            A movement-focused multiplayer game
-                            where you run, climb, and tag using
-                            your hands.
+                            A movement-focused multiplayer game where you run,
+                            climb, and tag using your hands.
                         </p>
-
 
                         <div class="card-bottom">
 
@@ -304,25 +255,21 @@
                                 Version Latest
                             </span>
 
-                            <button
-                                class="options"
-                                type="button"
-                            >
+                            <span class="options">
                                 Click for options →
-                            </button>
+                            </span>
 
                         </div>
 
                     </article>
 
 
-                    <!-- ================================
-                         MINECRAFT
-                    ================================= -->
+                    <!-- MINECRAFT -->
 
                     <article
                         class="soft-card"
                         data-name="Minecraft"
+                        data-options="Java,Bedrock"
                     >
 
                         <div class="card-top">
@@ -332,18 +279,15 @@
                             </span>
 
                         </div>
-
 
                         <h3>
                             Minecraft
                         </h3>
 
-
                         <p>
-                            Build, explore, craft, and survive
-                            in a huge block-based sandbox world.
+                            Build, explore, craft, and survive in a huge
+                            block-based sandbox world.
                         </p>
-
 
                         <div class="card-bottom">
 
@@ -351,25 +295,21 @@
                                 Version Latest
                             </span>
 
-                            <button
-                                class="options"
-                                type="button"
-                            >
+                            <span class="options">
                                 Click for options →
-                            </button>
+                            </span>
 
                         </div>
 
                     </article>
 
 
-                    <!-- ================================
-                         FORTNITE
-                    ================================= -->
+                    <!-- FORTNITE -->
 
                     <article
                         class="soft-card"
                         data-name="Fortnite"
+                        data-options="PC,Console"
                     >
 
                         <div class="card-top">
@@ -379,19 +319,15 @@
                             </span>
 
                         </div>
-
 
                         <h3>
                             Fortnite
                         </h3>
 
-
                         <p>
-                            Battle, build, and explore in Epic's
-                            constantly evolving multiplayer
-                            experience.
+                            Battle, build, and explore in Epic's constantly
+                            evolving multiplayer experience.
                         </p>
-
 
                         <div class="card-bottom">
 
@@ -399,25 +335,21 @@
                                 Version Latest
                             </span>
 
-                            <button
-                                class="options"
-                                type="button"
-                            >
+                            <span class="options">
                                 Click for options →
-                            </button>
+                            </span>
 
                         </div>
 
                     </article>
 
 
-                    <!-- ================================
-                         VALORANT
-                    ================================= -->
+                    <!-- VALORANT -->
 
                     <article
                         class="soft-card"
                         data-name="VALORANT"
+                        data-options="Riot Client"
                     >
 
                         <div class="card-top">
@@ -428,18 +360,14 @@
 
                         </div>
 
-
                         <h3>
                             VALORANT
                         </h3>
 
-
                         <p>
-                            Competitive 5v5 tactical shooter
-                            combining precise gunplay with
-                            unique agents.
+                            Competitive 5v5 tactical shooter combining
+                            precise gunplay with unique agents.
                         </p>
-
 
                         <div class="card-bottom">
 
@@ -447,28 +375,45 @@
                                 Version Latest
                             </span>
 
-                            <button
-                                class="options"
-                                type="button"
-                            >
+                            <span class="options">
                                 Click for options →
-                            </button>
+                            </span>
 
                         </div>
 
                     </article>
 
-
                 </div>
 
 
-                <!-- No search results -->
-
-                <div
-                    id="noResults"
-                    class="no-results"
-                >
+                <div id="noResults" class="no-results">
                     No software found.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             ABOUT
+        ================================= -->
+
+        <section id="about" class="about">
+
+            <div class="container">
+
+                <div class="about-content">
+
+                    <h2>
+                        Software without the clutter.
+                    </h2>
+
+                    <p>
+                        No account required. No fake premium tiers.
+                        Just a clean place to discover software.
+                    </p>
+
                 </div>
 
             </div>
@@ -479,85 +424,68 @@
 
 
     <!-- ================================
-         SOFTWARE OPTIONS POPUP
+         FOOTER
+    ================================= -->
+
+    <footer>
+
+        <div class="container footer-inner">
+
+            <strong>
+                Softs
+            </strong>
+
+            <span>
+                © 2026 Softs. A free software discovery website.
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ================================
+         SOFTWARE OPTIONS MODAL
     ================================= -->
 
     <div
-        id="softwareModal"
+        id="optionsModal"
         class="modal-overlay"
         aria-hidden="true"
     >
 
         <div
-            class="software-modal"
+            class="options-modal"
             role="dialog"
             aria-modal="true"
             aria-labelledby="modalTitle"
         >
 
-            <!-- Close -->
-
             <button
-                class="modal-close"
-                id="modalClose"
+                id="closeModal"
+                class="close-modal"
                 type="button"
-                aria-label="Close popup"
+                aria-label="Close"
             >
                 ×
             </button>
-
-
-            <!-- Icon -->
 
             <div class="modal-icon">
                 ↓
             </div>
 
-
-            <!-- Title -->
-
             <h2 id="modalTitle">
-                Software
+                Roblox
             </h2>
 
-
-            <!-- Description -->
-
-            <p id="modalDescription">
-                Choose an option below.
+            <p class="modal-description">
+                Choose an option to continue.
             </p>
 
-
-            <!-- Buttons -->
-
-            <div class="modal-options">
-
-                <button
-                    class="modal-button primary"
-                    id="downloadButton"
-                    type="button"
-                >
-                    Download
-                </button>
-
-
-                <button
-                    class="modal-button"
-                    id="detailsButton"
-                    type="button"
-                >
-                    View Details
-                </button>
-
-
-                <button
-                    class="modal-button cancel"
-                    id="cancelButton"
-                    type="button"
-                >
-                    Cancel
-                </button>
-
+            <div
+                id="modalOptions"
+                class="modal-options"
+            >
             </div>
 
         </div>
@@ -565,7 +493,17 @@
     </div>
 
 
-    <!-- JavaScript -->
+    <!-- ================================
+         CART
+    ================================= -->
+
+    <div
+        id="cartMessage"
+        class="cart-message"
+    >
+        Your cart is currently empty.
+    </div>
+
 
     <script src="script.js"></script>
 
