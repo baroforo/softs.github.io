@@ -1,1029 +1,367 @@
-/* =========================================
-   RESET
-========================================= */
+/* ================================
+   SEARCH
+================================ */
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+const searchInput = document.getElementById("search");
+const cards = document.querySelectorAll(".soft-card");
+const noResults = document.getElementById("noResults");
+
+if (searchInput) {
+
+    searchInput.addEventListener("input", function () {
+
+        const query = this.value.trim().toLowerCase();
+
+        let visibleCards = 0;
+
+        cards.forEach(card => {
+
+            const name =
+                (card.dataset.name || "").toLowerCase();
+
+            const text =
+                card.textContent.toLowerCase();
+
+            const matches =
+                query === "" ||
+                name.includes(query) ||
+                text.includes(query);
+
+            card.style.display =
+                matches ? "flex" : "none";
+
+            if (matches) {
+                visibleCards++;
+            }
+
+        });
+
+        if (noResults) {
+
+            noResults.style.display =
+                visibleCards === 0
+                    ? "block"
+                    : "none";
+
+        }
+
+    });
+
 }
 
 
-/* =========================================
-   VARIABLES
-========================================= */
+/* ================================
+   MODAL
+================================ */
 
-:root {
-    --background: #0d0d0f;
+const optionsModal =
+    document.getElementById("optionsModal");
 
-    --card: #151518;
-    --card-hover: #1a1a1e;
+const modalTitle =
+    document.getElementById("modalTitle");
 
-    --border: #29292e;
+const modalOptions =
+    document.getElementById("modalOptions");
 
-    --foreground: #f5f5f5;
-    --muted: #9999a3;
-
-    --accent: #8b8cff;
-    --accent-2: #6f70ff;
-
-    --max-width: 1180px;
-}
+const closeModal =
+    document.getElementById("closeModal");
 
 
-/* =========================================
-   BASE
-========================================= */
+/* Open modal */
 
-html {
-    scroll-behavior: smooth;
-}
+function openModal(card) {
 
-body {
-    min-height: 100vh;
+    const name =
+        card.dataset.name || "Software";
 
-    background:
-        radial-gradient(
-            circle at 50% -10%,
-            rgba(103, 104, 255, 0.13),
-            transparent 35%
-        ),
-        var(--background);
+    const optionsString =
+        card.dataset.options || "";
 
-    color: var(--foreground);
+    const options =
+        optionsString
+            .split(",")
+            .map(option => option.trim())
+            .filter(Boolean);
 
-    font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
 
-    line-height: 1.5;
-}
+    modalTitle.textContent = name;
 
-a {
-    color: inherit;
-    text-decoration: none;
-}
 
-button,
-input {
-    font: inherit;
-}
+    modalOptions.innerHTML = "";
 
-button {
-    -webkit-tap-highlight-color: transparent;
-}
 
-.container {
-    width: min(
-        var(--max-width),
-        calc(100% - 40px)
+    options.forEach(option => {
+
+        const button =
+            document.createElement("button");
+
+        button.type = "button";
+
+        button.className =
+            "modal-option";
+
+        button.innerHTML = `
+            <span class="modal-option-name">
+                ${option}
+            </span>
+
+            <span class="modal-option-arrow">
+                →
+            </span>
+        `;
+
+
+        button.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            addToCart(name, option);
+
+            closeOptionsModal();
+
+        });
+
+
+        modalOptions.appendChild(button);
+
+    });
+
+
+    optionsModal.classList.add("show");
+
+    optionsModal.setAttribute(
+        "aria-hidden",
+        "false"
     );
 
-    margin: 0 auto;
 }
 
 
-/* =========================================
-   HEADER
-========================================= */
+/* Close modal */
 
-header {
-    position: sticky;
+function closeOptionsModal() {
 
-    top: 0;
+    optionsModal.classList.remove("show");
 
-    z-index: 50;
+    optionsModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 
-    height: 76px;
-
-    border-bottom:
-        1px solid rgba(41, 41, 46, 0.75);
-
-    background:
-        rgba(13, 13, 15, 0.82);
-
-    backdrop-filter: blur(20px);
-
-    -webkit-backdrop-filter: blur(20px);
-}
-
-.header-inner {
-    height: 76px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 32px;
 }
 
 
-/* =========================================
-   LOGO
-========================================= */
+/* Close button */
 
-.logo {
-    font-size: 25px;
+if (closeModal) {
 
-    font-weight: 800;
+    closeModal.addEventListener(
+        "click",
+        closeOptionsModal
+    );
 
-    letter-spacing: -1.2px;
-}
-
-.logo span {
-    color: var(--accent);
 }
 
 
-/* =========================================
-   NAVIGATION
-========================================= */
+/* Click outside modal */
 
-nav {
-    margin-left: 24px;
+if (optionsModal) {
 
-    display: flex;
+    optionsModal.addEventListener(
+        "click",
+        function (event) {
 
-    gap: 24px;
-}
+            if (
+                event.target === optionsModal
+            ) {
+                closeOptionsModal();
+            }
 
-nav a {
-    color: var(--muted);
+        }
+    );
 
-    font-size: 14px;
-
-    transition:
-        color 0.2s ease;
-}
-
-nav a:hover {
-    color: var(--foreground);
 }
 
 
-/* =========================================
-   HEADER ACTIONS
-========================================= */
+/* Escape key */
 
-.header-actions {
-    margin-left: auto;
+document.addEventListener(
+    "keydown",
+    function (event) {
 
-    display: flex;
+        if (
+            event.key === "Escape" &&
+            optionsModal.classList.contains("show")
+        ) {
 
-    align-items: center;
+            closeOptionsModal();
 
-    gap: 12px;
-}
+        }
 
-
-/* =========================================
-   SEARCH
-========================================= */
-
-.search {
-    width: 250px;
-
-    height: 42px;
-
-    padding: 0 14px;
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 12px;
-
-    outline: none;
-
-    background: var(--card);
-
-    color: var(--foreground);
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.search::placeholder {
-    color: var(--muted);
-}
-
-.search:focus {
-    border-color: var(--accent);
-
-    box-shadow:
-        0 0 0 3px
-        rgba(139, 140, 255, 0.16);
-}
+    }
+);
 
 
-/* =========================================
-   CART BUTTON
-========================================= */
+/* ================================
+   CARD CLICK
+================================ */
 
-.cart-button {
-    height: 42px;
+/*
+   IMPORTANT:
 
-    padding: 0 16px;
+   The entire card is clickable.
 
-    display: flex;
+   We do NOT add a click event only
+   to the "Click for options" text.
 
-    align-items: center;
+   Clicking anywhere inside the card
+   opens the options window.
+*/
 
-    gap: 8px;
+cards.forEach(card => {
 
-    border:
-        1px solid var(--border);
+    card.addEventListener(
+        "click",
+        function () {
 
-    border-radius: 12px;
+            openModal(card);
 
-    background: var(--card);
+        }
+    );
 
-    color: var(--foreground);
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    font-weight: 700;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.cart-button:hover {
-    transform: translateY(-2px);
-
-    background: var(--card-hover);
-
-    border-color: #393940;
-}
+});
 
 
-/* =========================================
-   HERO
-========================================= */
+/* ================================
+   CART
+================================ */
 
-.hero {
-    position: relative;
+const cartButton =
+    document.getElementById("cartButton");
 
-    overflow: hidden;
+const cartMessage =
+    document.getElementById("cartMessage");
 
-    padding: 92px 0 70px;
-}
+const cartCount =
+    document.getElementById("cartCount");
 
-.hero::before {
-    content: "";
 
-    position: absolute;
+let cart = [];
 
-    width: 650px;
+let messageTimeout;
 
-    height: 400px;
 
-    left: 50%;
+/* Show cart notification */
 
-    top: -180px;
+function showMessage(message) {
 
-    transform: translateX(-50%);
+    if (!cartMessage) {
+        return;
+    }
 
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(104, 105, 255, 0.2),
-            transparent 70%
+    cartMessage.textContent =
+        message;
+
+    cartMessage.classList.add(
+        "show"
+    );
+
+    clearTimeout(
+        messageTimeout
+    );
+
+    messageTimeout =
+        setTimeout(
+            () => {
+
+                cartMessage.classList.remove(
+                    "show"
+                );
+
+            },
+            2500
         );
 
-    pointer-events: none;
 }
 
 
-/* =========================================
-   EYEBROW
-========================================= */
+/* Add software option to cart */
 
-.eyebrow {
-    position: relative;
+function addToCart(
+    software,
+    option
+) {
 
-    width: fit-content;
+    cart.push({
+        software: software,
+        option: option
+    });
 
-    display: inline-flex;
 
-    align-items: center;
+    updateCartCount();
 
-    gap: 8px;
 
-    padding: 8px 12px;
+    showMessage(
+        `${software} — ${option} added to cart.`
+    );
 
-    border:
-        1px solid var(--border);
-
-    border-radius: 999px;
-
-    background: var(--card);
-
-    color: var(--accent);
-
-    font-size: 13px;
-}
-
-.eyebrow-dot {
-    width: 7px;
-
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: var(--accent);
-
-    box-shadow:
-        0 0 12px var(--accent);
 }
 
 
-/* =========================================
-   HERO TITLE
-========================================= */
+/* Update cart number */
 
-h1 {
-    position: relative;
+function updateCartCount() {
 
-    max-width: 820px;
-
-    margin: 24px 0;
-
-    font-size:
-        clamp(52px, 7vw, 88px);
-
-    line-height: 0.98;
-
-    letter-spacing: -5px;
-
-    font-weight: 700;
-}
-
-.hero-title {
-    color: var(--accent);
-}
-
-
-/* =========================================
-   HERO DESCRIPTION
-========================================= */
-
-.hero-description {
-    max-width: 640px;
-
-    margin-bottom: 32px;
-
-    color: var(--muted);
-
-    font-size: 18px;
-
-    line-height: 1.65;
-}
-
-
-/* =========================================
-   STATS
-========================================= */
-
-.stats {
-    margin-top: 64px;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    overflow: hidden;
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 16px;
-
-    background: var(--border);
-
-    gap: 1px;
-}
-
-.stat {
-    padding: 24px;
-
-    background: var(--card);
-}
-
-.stat strong {
-    display: block;
-
-    font-size: 25px;
-}
-
-.stat small {
-    display: block;
-
-    margin-top: 6px;
-
-    color: var(--muted);
-}
-
-
-/* =========================================
-   SOFTWARE SECTION
-========================================= */
-
-.software {
-    padding: 36px 0 85px;
-}
-
-.software-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 16px;
-}
-
-
-/* =========================================
-   SOFTWARE CARD
-========================================= */
-
-.soft-card {
-    min-height: 245px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    padding: 22px;
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 20px;
-
-    background:
-        rgba(21, 21, 24, 0.8);
-
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.soft-card:hover {
-    transform: translateY(-5px);
-
-    border-color:
-        rgba(139, 140, 255, 0.55);
-
-    background: var(--card-hover);
-
-    box-shadow:
-        0 15px 40px
-        rgba(0, 0, 0, 0.2);
-}
-
-
-/* =========================================
-   CARD TOP
-========================================= */
-
-.card-top {
-    display: flex;
-
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    gap: 16px;
-}
-
-
-/* =========================================
-   CATEGORY
-========================================= */
-
-.category {
-    display: inline-block;
-
-    padding: 4px 8px;
-
-    border-radius: 6px;
-
-    background: #202024;
-
-    color: var(--accent);
-
-    font-size: 11px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.5px;
-
-    text-transform: uppercase;
-}
-
-
-/* =========================================
-   CARD TITLE
-========================================= */
-
-.soft-card h3 {
-    margin: 28px 0 8px;
-
-    font-size: 21px;
-
-    line-height: 1.2;
-
-    letter-spacing: -0.6px;
-}
-
-
-/* =========================================
-   CARD DESCRIPTION
-========================================= */
-
-.soft-card p {
-    color: var(--muted);
-
-    font-size: 14px;
-
-    line-height: 1.65;
-}
-
-
-/* =========================================
-   CARD BOTTOM
-========================================= */
-
-.card-bottom {
-    margin-top: auto;
-
-    padding-top: 22px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 12px;
-}
-
-.version {
-    color: var(--muted);
-
-    font-size: 12px;
-}
-
-
-/* =========================================
-   OPTIONS BUTTON
-========================================= */
-
-.options {
-    padding: 0;
-
-    border: 0;
-
-    background: transparent;
-
-    color: var(--accent);
-
-    cursor: pointer;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    white-space: nowrap;
-
-    transition:
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.options:hover {
-    color: #aaaaff;
-
-    transform: translateX(2px);
-}
-
-
-/* =========================================
-   NO SEARCH RESULTS
-========================================= */
-
-.no-results {
-    display: none;
-
-    padding: 50px 20px;
-
-    color: var(--muted);
-
-    text-align: center;
-
-    border:
-        1px dashed var(--border);
-
-    border-radius: 20px;
-}
-
-
-/* =========================================
-   MODAL OVERLAY
-========================================= */
-
-.modal-overlay {
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 200;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 20px;
-
-    background:
-        rgba(0, 0, 0, 0.68);
-
-    backdrop-filter: blur(8px);
-
-    -webkit-backdrop-filter: blur(8px);
-
-    opacity: 0;
-
-    visibility: hidden;
-
-    pointer-events: none;
-
-    transition:
-        opacity 0.2s ease,
-        visibility 0.2s ease;
-}
-
-.modal-overlay.show {
-    opacity: 1;
-
-    visibility: visible;
-
-    pointer-events: auto;
-}
-
-
-/* =========================================
-   MODAL WINDOW
-========================================= */
-
-.software-modal {
-    position: relative;
-
-    width: min(380px, 100%);
-
-    padding: 28px;
-
-    border:
-        1px solid #303037;
-
-    border-radius: 20px;
-
-    background: #151518;
-
-    box-shadow:
-        0 25px 80px
-        rgba(0, 0, 0, 0.55);
-
-    transform:
-        scale(0.94)
-        translateY(8px);
-
-    transition:
-        transform 0.2s ease;
-}
-
-.modal-overlay.show .software-modal {
-    transform:
-        scale(1)
-        translateY(0);
-}
-
-
-/* =========================================
-   MODAL CLOSE BUTTON
-========================================= */
-
-.modal-close {
-    position: absolute;
-
-    top: 12px;
-
-    right: 12px;
-
-    width: 32px;
-
-    height: 32px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border: 0;
-
-    border-radius: 8px;
-
-    background: transparent;
-
-    color: var(--muted);
-
-    cursor: pointer;
-
-    font-size: 24px;
-
-    line-height: 1;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease;
-}
-
-.modal-close:hover {
-    background: #242428;
-
-    color: white;
-}
-
-
-/* =========================================
-   MODAL ICON
-========================================= */
-
-.modal-icon {
-    width: 42px;
-
-    height: 42px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    margin-bottom: 18px;
-
-    border-radius: 12px;
-
-    background:
-        rgba(139, 140, 255, 0.12);
-
-    color: var(--accent);
-
-    font-size: 22px;
-
-    font-weight: 700;
-}
-
-
-/* =========================================
-   MODAL TITLE
-========================================= */
-
-.software-modal h2 {
-    margin-bottom: 6px;
-
-    color: var(--foreground);
-
-    font-size: 22px;
-
-    letter-spacing: -0.5px;
-}
-
-
-/* =========================================
-   MODAL DESCRIPTION
-========================================= */
-
-.software-modal p {
-    margin-bottom: 22px;
-
-    color: var(--muted);
-
-    font-size: 14px;
-
-    line-height: 1.5;
-}
-
-
-/* =========================================
-   MODAL OPTIONS
-========================================= */
-
-.modal-options {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 9px;
-}
-
-
-/* =========================================
-   MODAL BUTTON
-========================================= */
-
-.modal-button {
-    width: 100%;
-
-    min-height: 42px;
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 10px;
-
-    background: #1c1c20;
-
-    color: var(--foreground);
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.modal-button:hover {
-    background: #242428;
-
-    border-color: #3a3a42;
-
-    transform: translateY(-1px);
-}
-
-
-/* =========================================
-   DOWNLOAD BUTTON
-========================================= */
-
-.modal-button.primary {
-    border-color: var(--accent);
-
-    background: var(--accent);
-
-    color: white;
-}
-
-.modal-button.primary:hover {
-    background: var(--accent-2);
-
-    border-color: var(--accent-2);
-}
-
-
-/* =========================================
-   CANCEL BUTTON
-========================================= */
-
-.modal-button.cancel {
-    background: transparent;
-
-    border-color: transparent;
-
-    color: var(--muted);
-}
-
-.modal-button.cancel:hover {
-    background: #1c1c20;
-
-    color: var(--foreground);
-
-    border-color: transparent;
-}
-
-
-/* =========================================
-   RESPONSIVE — TABLET
-========================================= */
-
-@media (max-width: 900px) {
-
-    .software-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
+    if (!cartCount) {
+        return;
     }
 
-    .search {
-        width: 200px;
-    }
+    cartCount.textContent =
+        cart.length;
+
 }
 
 
-/* =========================================
-   RESPONSIVE — MOBILE
-========================================= */
+/* Cart button */
 
-@media (max-width: 700px) {
+if (cartButton) {
 
-    .container {
-        width:
-            min(
-                var(--max-width),
-                calc(100% - 28px)
+    cartButton.addEventListener(
+        "click",
+        function () {
+
+            if (cart.length === 0) {
+
+                showMessage(
+                    "Your cart is currently empty."
+                );
+
+                return;
+
+            }
+
+
+            const items =
+                cart
+                    .map(
+                        item =>
+                            `${item.software} — ${item.option}`
+                    )
+                    .join(", ");
+
+
+            showMessage(
+                `Cart: ${items}`
             );
-    }
 
-
-    nav {
-        display: none;
-    }
-
-
-    .search {
-        display: none;
-    }
-
-
-    .hero {
-        padding: 70px 0 55px;
-    }
-
-
-    h1 {
-        font-size:
-            clamp(48px, 14vw, 70px);
-
-        letter-spacing: -3px;
-    }
-
-
-    .stats {
-        grid-template-columns: 1fr;
-    }
-
-
-    .software-grid {
-        grid-template-columns: 1fr;
-    }
-
-
-    .card-bottom {
-        align-items: flex-start;
-
-        flex-direction: column;
-
-        gap: 12px;
-    }
-
-
-    .options {
-        font-size: 13px;
-    }
-
-
-    .software-modal {
-        padding: 24px;
-
-        border-radius: 18px;
-    }
+        }
+    );
 
 }
 
 
-/* =========================================
-   REDUCED MOTION
-========================================= */
+/* ================================
+   INITIALIZE
+================================ */
 
-@media (prefers-reduced-motion: reduce) {
-
-    html {
-        scroll-behavior: auto;
-    }
-
-    *,
-    *::before,
-    *::after {
-        transition: none !important;
-    }
-}
+updateCartCount();
