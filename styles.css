@@ -1,802 +1,358 @@
-/* ================================
-   RESET
-================================ */
+/* =========================================
+   SEARCH
+========================================= */
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+const searchInput =
+    document.getElementById("search");
+
+const cards =
+    document.querySelectorAll(".soft-card");
+
+const noResults =
+    document.getElementById("noResults");
+
+
+if (searchInput) {
+
+    searchInput.addEventListener("input", function () {
+
+        const query =
+            this.value
+                .trim()
+                .toLowerCase();
+
+        let visibleCards = 0;
+
+
+        cards.forEach(card => {
+
+            const name =
+                (
+                    card.dataset.name || ""
+                ).toLowerCase();
+
+            const text =
+                card.textContent.toLowerCase();
+
+
+            const matches =
+                query === "" ||
+                name.includes(query) ||
+                text.includes(query);
+
+
+            card.style.display =
+                matches
+                    ? "flex"
+                    : "none";
+
+
+            if (matches) {
+                visibleCards++;
+            }
+
+        });
+
+
+        if (noResults) {
+
+            noResults.style.display =
+                visibleCards === 0
+                    ? "block"
+                    : "none";
+
+        }
+
+    });
+
 }
 
 
-/* ================================
-   VARIABLES
-================================ */
+/* =========================================
+   SOFTWARE OPTIONS POPUP
+========================================= */
 
-:root {
-    --background: #0d0d0f;
-    --card: #151518;
-    --card-hover: #1a1a1e;
+const modal =
+    document.getElementById("softwareModal");
 
-    --border: #29292e;
+const modalTitle =
+    document.getElementById("modalTitle");
 
-    --foreground: #f5f5f5;
-    --muted: #9999a3;
+const modalDescription =
+    document.getElementById("modalDescription");
 
-    --accent: #8b8cff;
-    --accent-2: #6f70ff;
+const modalClose =
+    document.getElementById("modalClose");
 
-    --free: #63d391;
+const cancelButton =
+    document.getElementById("cancelButton");
 
-    --max-width: 1180px;
-}
+const downloadButton =
+    document.getElementById("downloadButton");
+
+const detailsButton =
+    document.getElementById("detailsButton");
+
+const optionButtons =
+    document.querySelectorAll(".options");
 
 
-/* ================================
-   BASE
-================================ */
+let selectedSoftware = "";
 
-html {
-    scroll-behavior: smooth;
-}
 
-body {
-    min-height: 100vh;
+/* =========================================
+   OPEN MODAL
+========================================= */
 
-    background:
-        radial-gradient(
-            circle at 50% -10%,
-            rgba(103, 104, 255, 0.13),
-            transparent 35%
-        ),
-        var(--background);
+function openModal(name) {
 
-    color: var(--foreground);
+    selectedSoftware = name;
 
-    font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
 
-    line-height: 1.5;
-}
+    modalTitle.textContent =
+        name;
 
-a {
-    color: inherit;
-    text-decoration: none;
-}
 
-button,
-input {
-    font: inherit;
-}
+    modalDescription.textContent =
+        `Choose an option for ${name}.`;
 
-.container {
-    width: min(
-        var(--max-width),
-        calc(100% - 40px)
+
+    modal.classList.add("show");
+
+
+    modal.setAttribute(
+        "aria-hidden",
+        "false"
     );
 
-    margin: 0 auto;
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    /*
+     * Put keyboard focus on close button.
+     */
+
+    setTimeout(() => {
+
+        modalClose.focus();
+
+    }, 50);
+
 }
 
 
-/* ================================
-   HEADER
-================================ */
+/* =========================================
+   CLOSE MODAL
+========================================= */
 
-header {
-    position: sticky;
-    top: 0;
+function closeModal() {
 
-    z-index: 50;
+    modal.classList.remove("show");
 
-    height: 76px;
 
-    border-bottom:
-        1px solid rgba(41, 41, 46, 0.75);
+    modal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 
-    background:
-        rgba(13, 13, 15, 0.82);
 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
+    document.body.style.overflow =
+        "";
 
-.header-inner {
-    height: 76px;
 
-    display: flex;
-    align-items: center;
+    selectedSoftware = "";
 
-    gap: 32px;
 }
 
 
-/* Logo */
+/* =========================================
+   OPTION BUTTONS
+========================================= */
 
-.logo {
-    font-size: 25px;
-    font-weight: 800;
+optionButtons.forEach(button => {
 
-    letter-spacing: -1.2px;
-}
+    button.addEventListener(
+        "click",
+        event => {
 
-.logo span {
-    color: var(--accent);
-}
+            /*
+             * Prevent the card itself from
+             * receiving the click.
+             */
 
-
-/* Navigation */
-
-nav {
-    margin-left: 24px;
-
-    display: flex;
-    gap: 24px;
-}
-
-nav a {
-    color: var(--muted);
-
-    font-size: 14px;
-
-    transition: color 0.2s ease;
-}
-
-nav a:hover {
-    color: var(--foreground);
-}
+            event.stopPropagation();
 
 
-/* Header actions */
-
-.header-actions {
-    margin-left: auto;
-
-    display: flex;
-    align-items: center;
-
-    gap: 12px;
-}
+            const card =
+                button.closest(".soft-card");
 
 
-/* Search */
+            const name =
+                card?.dataset.name ||
+                "Software";
 
-.search {
-    width: 250px;
-    height: 42px;
 
-    padding: 0 14px;
+            openModal(name);
 
-    border: 1px solid var(--border);
-    border-radius: 12px;
+        }
+    );
 
-    outline: none;
+});
 
-    background: var(--card);
-    color: var(--foreground);
 
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
+/* =========================================
+   CLOSE BUTTON
+========================================= */
 
-.search::placeholder {
-    color: var(--muted);
-}
+if (modalClose) {
 
-.search:focus {
-    border-color: var(--accent);
+    modalClose.addEventListener(
+        "click",
+        closeModal
+    );
 
-    box-shadow:
-        0 0 0 3px rgba(139, 140, 255, 0.16);
 }
 
 
-/* Cart */
+/* =========================================
+   CANCEL BUTTON
+========================================= */
 
-.cart-button {
-    height: 42px;
+if (cancelButton) {
 
-    padding: 0 16px;
+    cancelButton.addEventListener(
+        "click",
+        closeModal
+    );
 
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    border: 1px solid var(--border);
-    border-radius: 12px;
-
-    background: var(--card);
-    color: var(--foreground);
-
-    cursor: pointer;
-
-    font-size: 14px;
-    font-weight: 700;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
-}
-
-.cart-button:hover {
-    transform: translateY(-2px);
-    background: var(--card-hover);
 }
 
 
-/* ================================
-   HERO
-================================ */
+/* =========================================
+   CLICK OUTSIDE MODAL
+========================================= */
 
-.hero {
-    position: relative;
+if (modal) {
 
-    overflow: hidden;
+    modal.addEventListener(
+        "click",
+        event => {
 
-    padding: 92px 0 70px;
-}
+            /*
+             * If the user clicks the dark
+             * background instead of the window,
+             * close the popup.
+             */
 
-.hero::before {
-    content: "";
+            if (
+                event.target === modal
+            ) {
 
-    position: absolute;
+                closeModal();
 
-    width: 650px;
-    height: 400px;
+            }
 
-    left: 50%;
-    top: -180px;
+        }
+    );
 
-    transform: translateX(-50%);
-
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(104, 105, 255, 0.2),
-            transparent 70%
-        );
-
-    pointer-events: none;
 }
 
 
-/* Eyebrow */
+/* =========================================
+   ESCAPE KEY
+========================================= */
 
-.eyebrow {
-    position: relative;
+document.addEventListener(
+    "keydown",
+    event => {
 
-    width: fit-content;
+        if (
+            event.key === "Escape" &&
+            modal.classList.contains("show")
+        ) {
 
-    display: inline-flex;
-    align-items: center;
+            closeModal();
 
-    gap: 8px;
+        }
 
-    padding: 8px 12px;
-
-    border: 1px solid var(--border);
-    border-radius: 999px;
-
-    background: var(--card);
-
-    color: var(--accent);
-
-    font-size: 13px;
-}
-
-.eyebrow-dot {
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: var(--accent);
-
-    box-shadow:
-        0 0 12px var(--accent);
-}
-
-
-/* Main heading */
-
-h1 {
-    position: relative;
-
-    max-width: 820px;
-
-    margin: 24px 0;
-
-    font-size:
-        clamp(52px, 7vw, 88px);
-
-    line-height: 0.98;
-
-    letter-spacing: -5px;
-
-    font-weight: 700;
-}
-
-.hero-title {
-    color: var(--accent);
-}
-
-
-/* Hero paragraph */
-
-.hero-description {
-    max-width: 640px;
-
-    margin-bottom: 32px;
-
-    color: var(--muted);
-
-    font-size: 18px;
-
-    line-height: 1.65;
-}
-
-
-/* Primary button */
-
-.btn-primary {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 14px 20px;
-
-    border-radius: 12px;
-
-    background: var(--accent);
-    color: #fff;
-
-    font-weight: 700;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-
-    background: var(--accent-2);
-}
-
-
-/* ================================
-   STATS
-================================ */
-
-.stats {
-    margin-top: 64px;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    overflow: hidden;
-
-    border: 1px solid var(--border);
-    border-radius: 16px;
-
-    background: var(--border);
-
-    gap: 1px;
-}
-
-.stat {
-    padding: 24px;
-
-    background: var(--card);
-}
-
-.stat strong {
-    display: block;
-
-    font-size: 25px;
-}
-
-.stat small {
-    display: block;
-
-    margin-top: 6px;
-
-    color: var(--muted);
-}
-
-
-/* ================================
-   SOFTWARE
-================================ */
-
-.software {
-    padding: 36px 0 85px;
-}
-
-.software-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 16px;
-}
-
-
-/* Cards */
-
-.soft-card {
-    min-height: 245px;
-
-    display: flex;
-    flex-direction: column;
-
-    padding: 22px;
-
-    border: 1px solid var(--border);
-    border-radius: 20px;
-
-    background:
-        rgba(21, 21, 24, 0.8);
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.soft-card:hover {
-    transform: translateY(-5px);
-
-    border-color:
-        rgba(139, 140, 255, 0.55);
-
-    background: var(--card-hover);
-
-    box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.2);
-}
-
-
-/* Card top */
-
-.card-top {
-    display: flex;
-
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    gap: 16px;
-}
-
-
-/* Category */
-
-.category {
-    display: inline-block;
-
-    padding: 4px 8px;
-
-    border-radius: 6px;
-
-    background: #202024;
-
-    color: var(--accent);
-
-    font-size: 11px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.5px;
-
-    text-transform: uppercase;
-}
-
-
-/* Free label */
-
-.free {
-    color: var(--free);
-
-    font-size: 12px;
-
-    font-weight: 700;
-}
-
-
-/* Card title */
-
-.soft-card h3 {
-    margin: 28px 0 8px;
-
-    font-size: 21px;
-
-    line-height: 1.2;
-
-    letter-spacing: -0.6px;
-}
-
-
-/* Card description */
-
-.soft-card p {
-    color: var(--muted);
-
-    font-size: 14px;
-
-    line-height: 1.65;
-}
-
-
-/* Card bottom */
-
-.card-bottom {
-    margin-top: auto;
-
-    padding-top: 22px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 8px;
-}
-
-.version {
-    color: var(--muted);
-
-    font-size: 12px;
-}
-
-.options {
-    color: var(--accent);
-
-    font-size: 12px;
-
-    font-weight: 700;
-}
-
-
-/* ================================
-   ABOUT
-================================ */
-
-.about {
-    padding: 36px 0 85px;
-}
-
-.cta-panel {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 32px;
-
-    padding: 48px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 26px;
-
-    background:
-        radial-gradient(
-            circle at 85% 50%,
-            rgba(109, 110, 255, 0.12),
-            transparent 35%
-        ),
-        var(--card);
-}
-
-.cta-panel h2 {
-    margin-bottom: 10px;
-
-    font-size: 36px;
-
-    line-height: 1.1;
-
-    letter-spacing: -1.5px;
-}
-
-.cta-panel p {
-    color: var(--muted);
-}
-
-
-/* ================================
-   FOOTER
-================================ */
-
-footer {
-    border-top: 1px solid var(--border);
-
-    padding: 28px 0;
-
-    color: var(--muted);
-
-    font-size: 13px;
-}
-
-.footer-inner {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 8px;
-}
-
-.footer-inner strong {
-    color: var(--foreground);
-}
-
-
-/* ================================
-   SEARCH
-================================ */
-
-.no-results {
-    display: none;
-
-    padding: 50px 20px;
-
-    color: var(--muted);
-
-    text-align: center;
-
-    border: 1px dashed var(--border);
-
-    border-radius: 20px;
-}
-
-
-/* ================================
-   CART MESSAGE
-================================ */
-
-.cart-message {
-    position: fixed;
-
-    right: 20px;
-    bottom: 20px;
-
-    z-index: 100;
-
-    max-width: 320px;
-
-    padding: 14px 18px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 12px;
-
-    background: #1b1b1f;
-
-    color: white;
-
-    box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.4);
-
-    transform: translateY(120px);
-
-    opacity: 0;
-
-    transition: 0.3s ease;
-}
-
-.cart-message.show {
-    transform: translateY(0);
-
-    opacity: 1;
-}
-
-
-/* ================================
-   RESPONSIVE
-================================ */
-
-@media (max-width: 900px) {
-
-    .software-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
     }
-
-    .search {
-        width: 200px;
-    }
-}
+);
 
 
-@media (max-width: 700px) {
+/* =========================================
+   DOWNLOAD
+========================================= */
 
-    .container {
-        width:
-            min(
-                var(--max-width),
-                calc(100% - 28px)
+if (downloadButton) {
+
+    downloadButton.addEventListener(
+        "click",
+        () => {
+
+            /*
+             * This is currently a placeholder.
+             *
+             * Later you can replace this with
+             * the actual download URL.
+             */
+
+            alert(
+                `${selectedSoftware} download will be available soon.`
             );
-    }
 
-    nav {
-        display: none;
-    }
+            closeModal();
 
-    .search {
-        display: none;
-    }
+        }
+    );
 
-    .hero {
-        padding: 70px 0 55px;
-    }
-
-    h1 {
-        font-size:
-            clamp(48px, 14vw, 70px);
-
-        letter-spacing: -3px;
-    }
-
-    .stats {
-        grid-template-columns: 1fr;
-    }
-
-    .software-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .cta-panel {
-        align-items: flex-start;
-
-        flex-direction: column;
-
-        padding: 32px;
-    }
-
-    .cta-panel h2 {
-        font-size: 30px;
-    }
-
-    .footer-inner {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
 }
 
 
-/* ================================
-   REDUCED MOTION
-================================ */
+/* =========================================
+   VIEW DETAILS
+========================================= */
 
-@media (prefers-reduced-motion: reduce) {
+if (detailsButton) {
 
-    html {
-        scroll-behavior: auto;
-    }
+    detailsButton.addEventListener(
+        "click",
+        () => {
 
-    *,
-    *::before,
-    *::after {
-        transition: none !important;
-    }
+            /*
+             * Placeholder for a future details page.
+             */
+
+            alert(
+                `More information about ${selectedSoftware} will be available soon.`
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   CART BUTTON
+========================================= */
+
+const cartButton =
+    document.getElementById("cartButton");
+
+
+if (cartButton) {
+
+    cartButton.addEventListener(
+        "click",
+        () => {
+
+            alert(
+                "Your cart is currently empty."
+            );
+
+        }
+    );
+
 }
